@@ -9,13 +9,13 @@ MediFinder is an ASP.NET Core MVC app. IIS hosts it through the ASP.NET Core Mod
 - .NET 8 runtime installed.
 - SQL Server available to the IIS app pool.
 
-The current app uses SQL Server LocalDB:
+The app is configured to use the local default SQL Server instance:
 
 ```text
-Server=(localdb)\mssqllocaldb;Database=MediFinderDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True
+Server=localhost;Database=MediFinderDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True
 ```
 
-LocalDB is convenient for development, but IIS usually runs under an application pool identity. For a durable IIS setup, use SQL Server Express, SQL Server Developer, or a full SQL Server instance and update `appsettings.json`.
+When hosted in IIS, the app runs under the `IIS APPPOOL\MediFinder` identity by default. That identity needs access to the `MediFinderDb` database.
 
 ## 2. Publish
 
@@ -56,4 +56,11 @@ To use another port:
 
 ## 5. Database Note
 
-If IIS shows a database or startup error, the most likely cause is LocalDB access. Change `DefaultConnection` to a SQL Server instance that the IIS app pool identity can access.
+If IIS shows a database or startup error, grant database access to the app pool identity:
+
+```sql
+CREATE LOGIN [IIS APPPOOL\MediFinder] FROM WINDOWS;
+USE [MediFinderDb];
+CREATE USER [IIS APPPOOL\MediFinder] FOR LOGIN [IIS APPPOOL\MediFinder];
+ALTER ROLE db_owner ADD MEMBER [IIS APPPOOL\MediFinder];
+```
