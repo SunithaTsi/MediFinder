@@ -1,0 +1,51 @@
+@model MediFinder.ViewModels.HomeViewModel
+
+<form class="search-panel" asp-controller="Search" asp-action="Index" method="get">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+        <div>
+            <h2 class="h5 mb-1">Search doctors</h2>
+            <p class="text-secondary small mb-0">Choose location, specialty, or enter a doctor name.</p>
+        </div>
+        <span class="search-chip">Fast results</span>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label" for="city">City</label>
+            <select class="form-select" id="city" name="City">
+                <option value="">Any city</option>
+                @foreach (var city in Model.Cities)
+                {
+                    <option value="@city.Value">@city.Label</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="area">Area</label>
+            <select class="form-select" id="area" name="Area">
+                <option value="">Any area</option>
+                @foreach (var area in Model.Areas)
+                {
+                    <option value="@area.Value">@area.Label</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="specialization">Specialization</label>
+            <select class="form-select" id="specialization" name="Specialization">
+                <option value="">Any specialization</option>
+                @foreach (var specialization in Model.Specializations)
+                {
+                    <option value="@specialization.Value">@specialization.Label</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="keyword">Doctor or clinic</label>
+            <input class="form-control" id="keyword" name="Keyword" placeholder="Name, clinic, qualification" />
+        </div>
+        <div class="col-12 d-grid d-md-flex align-items-center gap-3">
+            <button class="btn btn-primary btn-lg px-4" type="submit">Search doctors</button>
+            <a class="link-secondary small" asp-controller="Search" asp-action="Index">Browse all doctors</a>
+        </div>
+    </div>
+</form>

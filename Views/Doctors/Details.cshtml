@@ -1,0 +1,119 @@
+@model MediFinder.ViewModels.DoctorProfileViewModel
+@{
+    ViewData["Title"] = Model.FullName;
+}
+
+<section class="profile-header">
+    <div class="container py-5">
+        <div class="row g-4 align-items-center">
+            <div class="col-md-4 col-lg-3">
+                <img class="profile-photo" src="@Model.ProfileImageUrl" alt="@Model.FullName" />
+            </div>
+            <div class="col-md-8 col-lg-9">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    @foreach (var specialization in Model.Specializations)
+                    {
+                        <span class="tag tag-light">@specialization</span>
+                    }
+                </div>
+                <h1 class="display-6 fw-bold">@Model.FullName</h1>
+                <p class="lead mb-2">@Model.Qualification</p>
+                <p class="text-secondary mb-3">@Model.Bio</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <span class="stat-chip">@Model.ExperienceYears years experience</span>
+                    <span class="stat-chip">@Model.AverageRating.ToString("0.0") rating</span>
+                    <span class="stat-chip">@Model.ReviewCount review@(Model.ReviewCount == 1 ? "" : "s")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    @if (TempData["ReviewMessage"] is string message)
+    {
+        <div class="alert alert-success">@message</div>
+    }
+
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <h2 class="h4 mb-3">Clinics</h2>
+            <div class="vstack gap-3">
+                @foreach (var clinic in Model.Clinics)
+                {
+                    <div class="info-panel">
+                        <div class="d-flex justify-content-between gap-3">
+                            <div>
+                                <h3 class="h5 mb-1">@clinic.Name</h3>
+                                <p class="text-secondary mb-1">@clinic.Address</p>
+                                <p class="text-secondary mb-0">@clinic.Area, @clinic.City</p>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-semibold">Rs. @clinic.ConsultationFee.ToString("0")</div>
+                                <a class="small" href="tel:@clinic.PhoneNumber">@clinic.PhoneNumber</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <h2 class="h4 mt-5 mb-3">Patient reviews</h2>
+            @if (!Model.Reviews.Any())
+            {
+                <p class="text-secondary">No approved reviews yet.</p>
+            }
+            else
+            {
+                <div class="vstack gap-3">
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <div class="info-panel">
+                            <div class="d-flex justify-content-between">
+                                <strong>@review.ReviewerName</strong>
+                                <span class="rating-pill">@review.Rating</span>
+                            </div>
+                            <p class="mb-1 mt-2">@review.Comment</p>
+                            <small class="text-secondary">@review.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</small>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-5">
+            <div class="review-panel">
+                <h2 class="h4 mb-3">Write a review</h2>
+                <form asp-controller="Reviews" asp-action="Create" asp-route-doctorSlug="@Model.Slug" method="post">
+                    <input type="hidden" asp-for="ReviewForm.DoctorId" name="DoctorId" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="ReviewForm.ReviewerName">Your name</label>
+                        <input class="form-control" asp-for="ReviewForm.ReviewerName" name="ReviewerName" />
+                        <span class="text-danger" asp-validation-for="ReviewForm.ReviewerName"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="ReviewForm.Rating">Rating</label>
+                        <select class="form-select" asp-for="ReviewForm.Rating" name="Rating">
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Good</option>
+                            <option value="3">3 - Average</option>
+                            <option value="2">2 - Poor</option>
+                            <option value="1">1 - Very poor</option>
+                        </select>
+                        <span class="text-danger" asp-validation-for="ReviewForm.Rating"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="ReviewForm.Comment">Review</label>
+                        <textarea class="form-control" asp-for="ReviewForm.Comment" name="Comment" rows="4"></textarea>
+                        <span class="text-danger" asp-validation-for="ReviewForm.Comment"></span>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Submit for moderation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

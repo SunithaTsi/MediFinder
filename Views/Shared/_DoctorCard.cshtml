@@ -1,0 +1,34 @@
+@model MediFinder.ViewModels.DoctorListItemViewModel
+
+<article class="doctor-card h-100">
+    <div class="doctor-card-image" style="background-image: url('@Model.ProfileImageUrl')">
+        <span class="doctor-card-badge">@Model.ExperienceYears yrs exp</span>
+    </div>
+    <div class="p-4">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+            <div>
+                <h3 class="h5 mb-1">@Model.FullName</h3>
+                <p class="text-secondary mb-2">@Model.Qualification</p>
+            </div>
+            <span class="rating-pill">@Model.AverageRating.ToString("0.0")</span>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            @foreach (var item in Model.Specializations)
+            {
+                <span class="tag">@item</span>
+            }
+        </div>
+        <p class="doctor-summary">@Model.Bio</p>
+        <div class="doctor-meta mb-3">
+            <span>@Model.PrimaryClinic</span>
+            <span>@Model.PrimaryArea</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center gap-3">
+            <div>
+                <small class="text-secondary d-block">Consultation from</small>
+                <strong>Rs. @Model.StartingFee.ToString("0")</strong>
+            </div>
+            <a class="btn btn-outline-primary" asp-controller="Doctors" asp-action="Details" asp-route-slug="@Model.Slug">View profile</a>
+        </div>
+    </div>
+</article>

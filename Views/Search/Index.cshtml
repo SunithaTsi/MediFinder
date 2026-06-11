@@ -1,0 +1,82 @@
+@model MediFinder.ViewModels.SearchResultsViewModel
+@{
+    ViewData["Title"] = "Search doctors";
+}
+
+<section class="page-band border-bottom">
+    <div class="container py-4">
+        <h1 class="h2 mb-3">Search doctors</h1>
+        <form class="row g-3 align-items-end" method="get">
+            <div class="col-md-3">
+                <label class="form-label" for="City">City</label>
+                <select class="form-select" id="City" name="City">
+                    <option value="">Any city</option>
+                    @foreach (var city in Model.Cities)
+                    {
+                        <option value="@city.Value" selected="@(Model.Search.City == city.Value)">@city.Label</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="Area">Area</label>
+                <select class="form-select" id="Area" name="Area">
+                    <option value="">Any area</option>
+                    @foreach (var area in Model.Areas)
+                    {
+                        <option value="@area.Value" selected="@(Model.Search.Area == area.Value)">@area.Label</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="Specialization">Specialization</label>
+                <select class="form-select" id="Specialization" name="Specialization">
+                    <option value="">Any specialization</option>
+                    @foreach (var specialization in Model.Specializations)
+                    {
+                        <option value="@specialization.Value" selected="@(Model.Search.Specialization == specialization.Value)">@specialization.Label</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="Keyword">Doctor or clinic</label>
+                <input class="form-control" id="Keyword" name="Keyword" value="@Model.Search.Keyword" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="SortBy">Sort by</label>
+                <select class="form-select" id="SortBy" name="SortBy">
+                    <option value="rating" selected="@(Model.Search.SortBy == "rating")">Rating</option>
+                    <option value="experience" selected="@(Model.Search.SortBy == "experience")">Experience</option>
+                    <option value="fee" selected="@(Model.Search.SortBy == "fee")">Lowest fee</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-grid">
+                <button class="btn btn-primary" type="submit">Apply filters</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 mb-0">@Model.TotalDoctors doctor@(Model.TotalDoctors == 1 ? "" : "s") found</h2>
+    </div>
+
+    @if (!Model.Doctors.Any())
+    {
+        <div class="empty-state">
+            <h3 class="h5">No matching doctors yet</h3>
+            <p class="text-secondary mb-0">Try a wider area, another city, or a different specialization.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var doctor in Model.Doctors)
+            {
+                <div class="col-md-6 col-xl-4">
+                    @await Html.PartialAsync("_DoctorCard", doctor)
+                </div>
+            }
+        </div>
+    }
+</section>

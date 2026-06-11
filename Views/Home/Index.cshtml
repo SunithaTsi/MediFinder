@@ -1,0 +1,100 @@
+@model MediFinder.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Find trusted doctors";
+}
+
+<section class="hero-band">
+    <div class="container py-5 py-lg-6">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="hero-badge">Verified local healthcare search</span>
+                <h1 class="display-4 fw-bold mb-3">Book smarter care with trusted doctors nearby.</h1>
+                <p class="lead text-secondary mb-4">Find specialists by city, area, clinic, and patient rating. Compare experience, consultation fees, and clinic locations before you decide.</p>
+                @await Html.PartialAsync("_SearchForm", Model)
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-visual">
+                    <div class="hero-photo" role="img" aria-label="Doctor consulting with a patient"></div>
+                    <div class="hero-floating-card">
+                        <span class="rating-pill">4.8</span>
+                        <div>
+                            <strong>Top rated care</strong>
+                            <span>Doctors with patient reviews</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-6 col-lg-3">
+                <div class="stat-box">
+                    <strong>@Model.FeaturedDoctors.Count()+</strong>
+                    <span>Featured doctors</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-box">
+                    <strong>@Model.Specializations.Count()+</strong>
+                    <span>Specialties</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-box">
+                    <strong>@Model.Areas.Count()+</strong>
+                    <span>Clinic areas</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-box">
+                    <strong>24/7</strong>
+                    <span>Search access</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="section-heading text-center mx-auto mb-4">
+        <p class="eyebrow">Popular specialties</p>
+        <h2 class="h3 mb-2">Start with the care you need</h2>
+        <p class="text-secondary mb-0">Browse common specialties and jump straight into a filtered doctor search.</p>
+    </div>
+
+    <div class="row g-3">
+        @foreach (var specialty in Model.Specializations)
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="specialty-card" asp-controller="Search" asp-action="Index" asp-route-Specialization="@specialty.Value">
+                    <span class="specialty-icon">@specialty.Label.Substring(0, 1)</span>
+                    <strong>@specialty.Label</strong>
+                    <small>View doctors</small>
+                </a>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+        <div>
+            <p class="eyebrow">Featured care</p>
+            <h2 class="h3 mb-0">Highly rated doctors</h2>
+        </div>
+        <a class="btn btn-outline-primary" asp-controller="Search" asp-action="Index">Browse all doctors</a>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var doctor in Model.FeaturedDoctors)
+        {
+            <div class="col-md-6 col-xl-4">
+                @await Html.PartialAsync("_DoctorCard", doctor)
+            </div>
+        }
+    </div>
+</section>
